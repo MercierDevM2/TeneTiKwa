@@ -1,18 +1,32 @@
 {
+<<<<<<< HEAD
   "name": "emploi-rca-propre",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+=======
+  "name": "emploi-rca",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+   "dev": "next dev",
+>>>>>>> 05a17f74438f4e8962ad149d51a2c9e672ed52e3
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@supabase/ssr": "^0.10.2",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
+=======
+    "next": "14",
+    "react": "18",
+    "react-dom": "18"
+>>>>>>> 05a17f74438f4e8962ad149d51a2c9e672ed52e3
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,7 +34,11 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
+<<<<<<< HEAD
     "eslint-config-next": "16.2.4",
+=======
+    "eslint-config-next": "16.2.3",
+>>>>>>> 05a17f74438f4e8962ad149d51a2c9e672ed52e3
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -64,7 +64,11 @@ export default function Home() {
     {/* FOOTER SIMPLE */}
       <footer className="bg-white border-t mt-12 py-6">
         <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
+<<<<<<< HEAD
           © 2026 GreenItCar - Tous droits réservés
+=======
+          © 2026 TeneTikwa - Tous droits réservés
+>>>>>>> 05a17f74438f4e8962ad149d51a2c9e672ed52e3
         </div>
       </footer>
     </main>
