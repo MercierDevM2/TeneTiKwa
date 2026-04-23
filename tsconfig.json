@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/dashboard/admin/page.jsx", "utils/supabase/client.js"  ],
   "exclude": ["node_modules"]
 }
