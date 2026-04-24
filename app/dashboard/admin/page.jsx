@@ -51,7 +51,7 @@ export default function AdminPage() {
         console.log("Accès refusé : pas admin");
         router.replace("/dashboard");
       } else {
-        // 3. L'utilisateur est bien admin → chargement des jobs
+        // 3. L'utilisateur est bien admin: chargement des jobs
         if (isMounted) {
           setIsAdmin(true);
 
@@ -62,7 +62,7 @@ export default function AdminPage() {
 
           if (isMounted) {
             setJobs(jobsData || []);
-            setAuthChecked(true); // ✅ On peut maintenant afficher l'interface admin
+            setAuthChecked(true); //  On peut maintenant afficher l'interface admin
           }
         }
       }
@@ -91,8 +91,8 @@ export default function AdminPage() {
   // ➕ Ajouter une offre
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.titre || !form.entreprise || !form.lieu) {
-      alert("Veuillez remplir les champs obligatoires (titre, entreprise, lieu)");
+    if (!form.titre || !form.entreprise || !form.lieu || !form.type || !form.description || !form.logo || !form.lien || !form.source || !form.date) {
+      alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
@@ -108,6 +108,7 @@ export default function AdminPage() {
           logo: form.logo,
           lien: form.lien,
           source: form.source,
+          date: form.date,
         },
       ])
       .select();
@@ -126,6 +127,7 @@ export default function AdminPage() {
         logo: "",
         lien: "",
         source: "",
+        date: "",
       });
       alert("Offre publiée !");
     }
@@ -144,7 +146,7 @@ export default function AdminPage() {
     }
   };
 
-  // ⏳ Pendant la vérification, on n’affiche qu’un indicateur de chargement
+  //  Pendant la vérification, on n’affiche qu’un indicateur de chargement
   if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -153,113 +155,121 @@ export default function AdminPage() {
     );
   }
 
-  // ✅ Ici l’utilisateur est admin, l’interface s’affiche sans flash parasite
-  return (
-    <div className="min-h-screen bg-gray-100">
-      {/* HEADER */}
-      <header className="bg-white shadow p-4 flex justify-between items-center">
-        <h1 className="font-bold text-lg">Admin Dashboard</h1>
-        <button onClick={handleLogout} className="text-red-500 font-medium">
+  //  Ici l’utilisateur est admin
+ return (
+  <div className="min-h-screen bg-gray-100 flex flex-col">
+
+    {/* HEADER */}
+    <header className="bg-white shadow">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 px-4 py-4 sm:px-6 lg:px-8">
+        <h1 className="font-bold text-lg sm:text-xl">
+          Admin Dashboard
+        </h1>
+
+        <button
+          onClick={handleLogout}
+          className="text-red-500 font-medium hover:text-red-700 transition"
+        >
           Déconnexion
         </button>
-      </header>
+      </div>
+    </header>
 
-      <div className="p-6 grid md:grid-cols-2 gap-6">
-        {/* FORMULAIRE D'AJOUT */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="font-semibold mb-4">Ajouter une offre</h2>
+    {/* MAIN */}
+    <main className="flex-1">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <input
-              placeholder="Titre *"
-              value={form.titre}
-              onChange={(e) => setForm({ ...form, titre: e.target.value })}
-              className="w-full border p-2 rounded"
-              required
-            />
-            <input
-              placeholder="Entreprise *"
-              value={form.entreprise}
-              onChange={(e) => setForm({ ...form, entreprise: e.target.value })}
-              className="w-full border p-2 rounded"
-              required
-            />
-            <input
-              placeholder="Lieu *"
-              value={form.lieu}
-              onChange={(e) => setForm({ ...form, lieu: e.target.value })}
-              className="w-full border p-2 rounded"
-              required
-            />
-            <input
-              placeholder="Type (CDI, CDD...)"
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="w-full border p-2 rounded"
-            />
-            <textarea
-              placeholder="Description"
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              className="w-full border p-2 rounded"
-            />
-            <input
-              placeholder="Logo (URL)"
-              value={form.logo}
-              onChange={(e) => setForm({ ...form, logo: e.target.value })}
-              className="w-full border p-2 rounded"
-            />
-            <input
-              placeholder="Lien (URL)"
-              value={form.lien}
-              onChange={(e) => setForm({ ...form, lien: e.target.value })}
-              className="w-full border p-2 rounded"
-            />
-            <input
-              placeholder="Source"
-              value={form.source}
-              onChange={(e) => setForm({ ...form, source: e.target.value })}
-              className="w-full border p-2 rounded"
-            />
-            <button className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
-              Publier
-            </button>
-          </form>
-        </div>
+        {/* GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* LISTE DES OFFRES */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="font-semibold mb-4">Offres publiées</h2>
+          {/* FORM */}
+          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow">
+            <h2 className="font-semibold text-lg mb-4">
+              Ajouter une offre
+            </h2>
 
-          {jobs.length === 0 ? (
-            <p className="text-gray-400">Aucune offre pour le moment.</p>
-          ) : (
-            <div className="space-y-3">
-              {jobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="border p-3 rounded flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-bold">{job.titre}</p>
-                    <p className="text-sm text-gray-500">
-                      {job.entreprise} – {job.lieu}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleDelete(job.id)}
-                    className="text-red-500 hover:text-red-700 font-medium"
-                  >
-                    Supprimer
-                  </button>
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+
+              {[
+                { key: "titre", placeholder: "Titre *" },
+                { key: "entreprise", placeholder: "Entreprise *" },
+                { key: "lieu", placeholder: "Lieu *" },
+                { key: "type", placeholder: "Type (CDI, CDD...)" },
+                { key: "logo", placeholder: "Logo (URL)" },
+                { key: "lien", placeholder: "Lien (URL)" },
+                { key: "source", placeholder: "Source" },
+                { key: "date", placeholder: "Date" },
+              ].map((field) => (
+                <input
+                  key={field.key}
+                  placeholder={field.placeholder}
+                  value={form[field.key]}
+                  onChange={(e) =>
+                    setForm({ ...form, [field.key]: e.target.value })
+                  }
+                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition"
+                  required
+                />
               ))}
-            </div>
-          )}
+
+              <textarea
+                placeholder="Description *"
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition"
+                required
+              />
+
+              <button className="w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition text-sm sm:text-base font-medium">
+                Publier
+              </button>
+            </form>
+          </div>
+
+          {/* LIST */}
+          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow">
+            <h2 className="font-semibold text-lg mb-4">
+              Offres publiées
+            </h2>
+
+            {jobs.length === 0 ? (
+              <p className="text-gray-400 text-sm">
+                Aucune offre pour le moment.
+              </p>
+            ) : (
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                {jobs.map((job) => (
+                  <div
+                    key={job.id}
+                    className="border border-gray-200 p-3 rounded-lg flex flex-col sm:flex-row justify-between sm:items-center gap-2"
+                  >
+                    <div>
+                      <p className="font-semibold text-sm sm:text-base">
+                        {job.titre}
+                      </p>
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        {job.entreprise} – {job.lieu}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleDelete(job.id)}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
-    </div>
-  );
+    </main>
+
+  </div>
+);
 }

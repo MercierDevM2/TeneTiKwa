@@ -43,11 +43,11 @@ export default function DashboardPage() {
         // 👤 PROFILE
         const { data: profile } = await supabase
           .from("profiles")
-          .select("nom")
+          .select("nom , avatar_url")
           .eq("id", currentUser.id)
           .maybeSingle();
 
-        // 📦 JOBS (IMPORTANT: debug complet)
+        // 📦 JOBS 
         const { data: jobsData, error: jobsError } = await supabase
           .from("jobs")
           .select("*");
@@ -60,6 +60,7 @@ export default function DashboardPage() {
         setUser({
           name: profile?.nom || currentUser.email?.split("@")[0],
           email: currentUser.email,
+          avatar_url: profile?.avatar_url || null,
         });
 
         // ⚠️ IMPORTANT: fallback visible même si vide
@@ -126,7 +127,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 pb-20">
 
       {/* HEADER */}
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
@@ -141,7 +142,11 @@ export default function DashboardPage() {
 
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white">
-                {user.name?.charAt(0)}
+                {user.avatar_url ? (
+                  <Image src={user.avatar_url} alt="Avatar" width={32} height={32} />
+                ) : (
+                  <span>{user.name?.charAt(0)}</span>
+                )}
               </div>
               <span className="hidden md:inline">{user.name}</span>
             </div>
@@ -266,8 +271,8 @@ export default function DashboardPage() {
 
       </main>
 
-      <footer className="bg-white border-t mt-auto py-6">
-      <div className="text-center text-gray-500 text-sm">
+      <footer className="fixed bottom-0 left-0 w-full bg-white border-t py-6 z-50">
+        <div className="text-center text-gray-500 text-sm">
         © 2026 GreenItCar tous droits réservés.
       </div>
     </footer>

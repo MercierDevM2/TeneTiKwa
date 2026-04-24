@@ -63,65 +63,73 @@ export default function Inscrire() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-lg p-8">
-
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-orange-600">
+  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 lg:px-8">
+    
+    {/* Container global adaptable */}
+    <div className="w-full max-w-md sm:max-w-lg lg:max-w-xl">
+      
+      {/* Card */}
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10">
+        
+        {/* HEADER */}
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">
             Bienvenue sur TeneTikwa
           </h1>
-          <p className="text-gray-500 mt-2 text-sm">
+          <p className="text-gray-500 mt-2 text-xs sm:text-sm lg:text-base">
             Votre marché d'emploi près de vous
           </p>
         </div>
 
         {/* FORM */}
-        <form onSubmit={handleLoginPassword} className="space-y-4">
-
+        <form onSubmit={handleLoginPassword} className="space-y-4 sm:space-y-5">
+          
           <input
             type="email"
             placeholder="Email"
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 sm:p-3.5 rounded-lg text-sm sm:text-base transition"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Mot de passe"
-            className="w-full border p-3 rounded-lg pr-10"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
 
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-        >
-          {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-        </button>
-        </div>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Mot de passe"
+              className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 sm:p-3.5 rounded-lg pr-10 text-sm sm:text-base transition"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+          </div>
+
           {error && (
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-red-500 text-xs sm:text-sm">{error}</p>
           )}
 
           <button
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-full hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-3 sm:py-3.5 rounded-full hover:bg-blue-700 transition text-sm sm:text-base font-medium"
           >
             {loading ? "Chargement..." : "S'inscrire"}
           </button>
-
         </form>
 
         {/* DIVIDER */}
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="text-xs text-gray-400">ou continuer avec</span>
+          <span className="text-xs text-gray-400">
+            ou continuer avec
+          </span>
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
@@ -129,12 +137,12 @@ export default function Inscrire() {
         <button
           onClick={loginWithGoogle}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 border py-3 rounded-full hover:bg-gray-50"
+          className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 transition text-sm sm:text-base"
         >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
             className="w-5 h-5"
-            alt="google"
+            alt="Google"
           />
           Continuer avec Google
         </button>
@@ -143,7 +151,7 @@ export default function Inscrire() {
         <button
           onClick={loginWithApple}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 border py-3 rounded-full hover:bg-gray-50 mt-3"
+          className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 mt-3 transition text-sm sm:text-base"
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
@@ -153,15 +161,16 @@ export default function Inscrire() {
           Continuer avec Apple
         </button>
 
-        {/* LOGIN LINK */}
-        <p className="text-center text-sm text-gray-500 mt-6">
+        {/* FOOTER */}
+        <p className="text-center text-xs sm:text-sm text-gray-500 mt-6">
           Déjà un compte ?{" "}
-          <Link href="/auth/login" className="text-blue-600">
+          <Link href="/auth/login" className="text-blue-600 hover:underline">
             Se connecter
           </Link>
         </p>
 
       </div>
     </div>
-  );
+  </div>
+);
 }
