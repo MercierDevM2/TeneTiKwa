@@ -14,108 +14,158 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [authChecked, setAuthChecked] = useState(false);
+   const [session, setSession] = useState(null);
 
   const [user, setUser] = useState({
-    name: "Utilisateur",
-    email: "",
-  });
+  name: "",
+  email: "",
+  avatar_url: null,
+});
 
   useEffect(() => {
-    let mounted = true;
+  let mounted = true;
 
-    const init = async () => {
-      try {
-        // 🔐 SESSION
-        const { data: { session }, error: sessionError } =
-          await supabase.auth.getSession();
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
 
-        if (sessionError) {
-          console.log("Session error:", sessionError.message);
-        }
+    if (!session) {
+      router.replace("/");
+      return;
+    }
 
-        if (!session) {
-          router.replace("/");
-          return;
-        }
+    if (mounted) {
+      setAuthChecked(true);
+    }
+  };
 
-        const currentUser = session.user;
+  checkSession();
 
-        // 👤 PROFILE
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("nom , avatar_url")
-          .eq("id", currentUser.id)
-          .maybeSingle();
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!session) {
+      router.replace("/");
+    }
+  });
 
-        // 📦 JOBS 
-        const { data: jobsData, error: jobsError } = await supabase
-          .from("jobs")
-          .select("*");
+  return () => {
+    mounted = false;
+    subscription.unsubscribe();
+  };
+  setUser({
+  name: profile?.nom || currentUser.email?.split("@")[0],
+  email: currentUser.email,
+  avatar_url: profile?.avatar_url || null,
+});
+}, []);
 
-        console.log("JOBS RAW:", jobsData);
-        console.log("JOBS ERROR:", jobsError);
+ useEffect(() => {
+  let mounted = true;
 
-        if (!mounted) return;
+  const init = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
 
-        setUser({
-          name: profile?.nom || currentUser.email?.split("@")[0],
-          email: currentUser.email,
-          avatar_url: profile?.avatar_url || null,
-        });
+    if (!session) {
+      router.replace("/");
+      return;
+    }
 
-        // ⚠️ IMPORTANT: fallback visible même si vide
-        setJobs(jobsData ?? []);
-        setFilteredJobs(jobsData ?? []);
-        setAuthChecked(true);
+    const currentUser = session.user;
 
-      } catch (err) {
-        console.log("INIT ERROR:", err.message);
-        setAuthChecked(true);
-      }
-    };
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("nom, avatar_url")
+      .eq("id", currentUser.id)
+      .maybeSingle();
 
-    init();
+    if (!mounted) return;
 
-    const { data: { subscription } } =
-      supabase.auth.onAuthStateChange((event) => {
-        if (event === "SIGNED_OUT") {
-          router.replace("/");
-        }
-      });
+    setSession(session);
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
+    setUser({
+      name: profile?.nom || currentUser.email?.split("@")[0],
+      email: currentUser.email,
+      avatar_url: profile?.avatar_url || null,
+    });
+
+    setAuthChecked(true);
+  };
+
+  init();
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!session) {
+      router.replace("/");
+    } else {
+      setSession(session);
+    }
+  });
+
+  return () => {
+    mounted = false;
+    subscription.unsubscribe();
+  };
+}, []);
+
+const normalize = (text) => {
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\(.*?\)/g, "")
+    .trim();
+};
+
+useEffect(() => {
+  if (!session) return;
+
+  const fetchData = async () => {
+    const { data: jobsData } = await supabase
+      .from("jobs")
+      .select("*")
+      .order("date", { ascending: false });
+
+    setJobs(jobsData ?? []);
+    setFilteredJobs(jobsData ?? []);
+    setAuthChecked(true);
+  };
+
+  fetchData();
+}, [session]);
 
   // 🔍 SEARCH
-  const handleSearch = () => {
-    let filtered = [...jobs];
+const handleSearch = () => {
+  let filtered = [...jobs];
 
-    if (filters.poste) {
-      filtered = filtered.filter(job =>
-        job.titre?.toLowerCase().includes(filters.poste.toLowerCase())
+  if (filters.poste) {
+    const search = normalize(filters.poste);
+
+    filtered = filtered.filter(job => {
+      const titre = normalize(job.titre);
+
+      return (
+        titre.includes(search) ||
+        search.includes(titre)
       );
-    }
+    });
+  }
 
-    if (filters.lieu) {
-      filtered = filtered.filter(job =>
-        job.lieu?.toLowerCase().includes(filters.lieu.toLowerCase())
-      );
-    }
+  if (filters.lieu) {
+    const search = normalize(filters.lieu);
 
-    setFilteredJobs(filtered);
-  };
+    filtered = filtered.filter(job =>
+      normalize(job.lieu).includes(search)
+    );
+  }
+
+  setFilteredJobs(filtered);
+};
 
   const handleReset = () => {
     setFilters({ poste: "", lieu: "" });
     setFilteredJobs(jobs);
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.replace("/");
   };
 
   if (!authChecked) {
@@ -150,10 +200,6 @@ export default function DashboardPage() {
               </div>
               <span className="hidden md:inline">{user.name}</span>
             </div>
-
-            <button onClick={handleLogout} className="text-red-600">
-              Déconnexion
-            </button>
           </div>
         </div>
       </header>
