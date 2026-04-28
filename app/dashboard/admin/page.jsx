@@ -117,7 +117,7 @@ export default function AdminPage() {
       console.error("Erreur lors de l'ajout :", error.message);
       alert("Erreur lors de l'ajout de l'offre.");
     } else {
-      setJobs((prev) => [data[0], ...prev]); // ajout en tête de liste
+      setJobs((prev) => [data[0], ...prev]);
       setForm({
         titre: "",
         entreprise: "",
@@ -127,7 +127,7 @@ export default function AdminPage() {
         logo: "",
         lien: "",
         source: "",
-        date: "",
+        date: ""
       });
       alert("Offre publiée !");
     }
@@ -198,16 +198,17 @@ export default function AdminPage() {
                 { key: "logo", placeholder: "Logo (URL)" },
                 { key: "lien", placeholder: "Lien (URL)" },
                 { key: "source", placeholder: "Source" },
-                { key: "date", placeholder: "Date" },
+                { key: "date", placeholder: "Date", type: "date" },
               ].map((field) => (
                 <input
                   key={field.key}
                   placeholder={field.placeholder}
-                  value={form[field.key]}
+                  value={form[field.key] || ""}
                   onChange={(e) =>
                     setForm({ ...form, [field.key]: e.target.value })
                   }
                   className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition"
+                  type={field.type || "text"}
                   required
                 />
               ))}

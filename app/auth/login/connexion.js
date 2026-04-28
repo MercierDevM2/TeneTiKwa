@@ -38,7 +38,7 @@ const handleLoginPassword = async (e) => {
       setError("Compte introuvable. Redirection vers inscription...");
 
       setTimeout(() => {
-        router.push("/auth/inscription");
+        router.push("/auth/login");
       }, 1500);
 
       setLoading(false);

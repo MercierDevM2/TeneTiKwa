@@ -16,27 +16,34 @@ export default function Inscrire() {
 
 
   // 🔐 EMAIL / PASSWORD SIGN UP
-  const handleLoginPassword = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleLoginPassword = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+  const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: {
+      nom: email.split("@")[0],
+      avatar_url: null
+    },
+    emailRedirectTo: `${window.location.origin}/auth/callback`,
+  },
+});
 
-    if (error) {
-      setError(error.message);
-    } else {
-      alert("Compte créé ! Vérifie ton email.");
-    }
-
+  if (error) {
+    setError(error.message);
     setLoading(false);
-  };
+    return;
+  }
+
+  // ✔ message de succès
+  alert("Vérifie ton email pour activer ton compte.");
+
+  setLoading(false);
+};
 
   // 🔵 GOOGLE
   const loginWithGoogle = async () => {
