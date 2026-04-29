@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const supabase = createClient();
@@ -14,159 +14,57 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [authChecked, setAuthChecked] = useState(false);
-   const [session, setSession] = useState(null);
+  const [session, setSession] = useState(null);
 
   const [user, setUser] = useState({
-  name: "",
-  email: "",
-  avatar_url: null,
-});
+    name: "",
+    email: "",
+    avatar_url: null,
+  });
 
   useEffect(() => {
-  let mounted = true;
+    let mounted = true;
 
-  const checkSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const init = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (!session) {
-      router.replace("/");
-      return;
-    }
+      if (!session) {
+        router.replace("/");
+        return;
+      }
 
-    if (mounted) {
-      setAuthChecked(true);
-    }
-  };
+      const currentUser = session.user;
 
-  checkSession();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("nom, avatar_url")
+        .eq("id", currentUser.id)
+        .maybeSingle();
 
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange((_event, session) => {
-    if (!session) {
-      router.replace("/");
-    }
-  });
+      if (!mounted) return;
 
-  return () => {
-    mounted = false;
-    subscription.unsubscribe();
-  };
-  setUser({
-  name: profile?.nom || currentUser.email?.split("@")[0],
-  email: currentUser.email,
-  avatar_url: profile?.avatar_url || null,
-});
-}, []);
-
- useEffect(() => {
-  let mounted = true;
-
-  const init = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.replace("/");
-      return;
-    }
-
-    const currentUser = session.user;
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("nom, avatar_url")
-      .eq("id", currentUser.id)
-      .maybeSingle();
-
-    if (!mounted) return;
-
-    setSession(session);
-
-    setUser({
-      name: profile?.nom || currentUser.email?.split("@")[0],
-      email: currentUser.email,
-      avatar_url: profile?.avatar_url || null,
-    });
-
-    setAuthChecked(true);
-  };
-
-  init();
-
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange((_event, session) => {
-    if (!session) {
-      router.replace("/");
-    } else {
       setSession(session);
-    }
-  });
 
-  return () => {
-    mounted = false;
-    subscription.unsubscribe();
-  };
-}, []);
+      setUser({
+        name: profile?.nom || currentUser.email?.split("@")[0],
+        email: currentUser.email,
+        avatar_url: profile?.avatar_url || null,
+      });
 
-const normalize = (text) => {
-  return (text || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\(.*?\)/g, "")
-    .trim();
-};
+      const { data: jobsData } = await supabase
+        .from("jobs")
+        .select("*")
+        .order("date", { ascending: false });
 
-useEffect(() => {
-  if (!session) return;
+      setJobs(jobsData || []);
+      setFilteredJobs(jobsData || []);
+      setAuthChecked(true);
+    };
 
-  const fetchData = async () => {
-    const { data: jobsData } = await supabase
-      .from("jobs")
-      .select("*")
-      .order("date", { ascending: false });
-
-    setJobs(jobsData ?? []);
-    setFilteredJobs(jobsData ?? []);
-    setAuthChecked(true);
-  };
-
-  fetchData();
-}, [session]);
-
-  // 🔍 SEARCH
-const handleSearch = () => {
-  let filtered = [...jobs];
-
-  if (filters.poste) {
-    const search = normalize(filters.poste);
-
-    filtered = filtered.filter(job => {
-      const titre = normalize(job.titre);
-
-      return (
-        titre.includes(search) ||
-        search.includes(titre)
-      );
-    });
-  }
-
-  if (filters.lieu) {
-    const search = normalize(filters.lieu);
-
-    filtered = filtered.filter(job =>
-      normalize(job.lieu).includes(search)
-    );
-  }
-
-  setFilteredJobs(filtered);
-};
-
-  const handleReset = () => {
-    setFilters({ poste: "", lieu: "" });
-    setFilteredJobs(jobs);
-  };
+    init();
+  }, []);
 
   if (!authChecked) {
     return (
@@ -175,7 +73,7 @@ const handleSearch = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 pb-20">
 

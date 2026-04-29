@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 
+
 export default function AdminPage() {
   const supabase = createClient();
   const router = useRouter();
