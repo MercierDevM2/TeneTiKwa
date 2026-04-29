@@ -29,7 +29,7 @@ const handleLoginPassword = async (e) => {
       nom: email.split("@")[0],
       avatar_url: null
     },
-    emailRedirectTo: `${window.location.origin}/auth/callback`,
+    redirectTo: `${window.location.origin}/auth/callback`,
   },
 });
 
