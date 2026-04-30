@@ -114,24 +114,37 @@ export default function AdminPage() {
       ])
       .select();
 
-    if (error) {
-      console.error("Erreur lors de l'ajout :", error.message);
-      alert("Erreur lors de l'ajout de l'offre.");
-    } else {
-      setJobs((prev) => [data[0], ...prev]);
-      setForm({
-        titre: "",
-        entreprise: "",
-        lieu: "",
-        type: "",
-        description: "",
-        logo: "",
-        lien: "",
-        source: "",
-        date: ""
-      });
-      alert("Offre publiée !");
-    }
+    if (!error) {
+  setJobs((prev) => [data[0], ...prev]);
+
+  // 🔔 NOTIFICATIONS
+  const { data: users } = await supabase
+    .from("profiles")
+    .select("id");
+
+  if (users && users.length > 0) {
+    const notifications = users.map((user) => ({
+      user_id: user.id,
+      message: `Nouveau job: ${form.titre}`,
+    }));
+
+    await supabase.from("notifications").insert(notifications);
+  }
+
+  setForm({
+    titre: "",
+    entreprise: "",
+    lieu: "",
+    type: "",
+    description: "",
+    logo: "",
+    lien: "",
+    source: "",
+    date: ""
+  });
+
+  alert("Offre publiée !");
+}
   };
 
   // ❌ Supprimer une offre

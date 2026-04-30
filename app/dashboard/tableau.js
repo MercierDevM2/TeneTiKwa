@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import Image from "next/image";
 import Link from "next/link";
-
+import Image from "next/image";
+import Fuse from 'fuse.js';
+import { useMemo, useCallback } from "react";
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
@@ -22,50 +23,130 @@ export default function DashboardPage() {
     avatar_url: null,
   });
 
-  useEffect(() => {
-    let mounted = true;
+ useEffect(() => {
+  let mounted = true;
 
-    const init = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  const init = async () => {
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
 
-      if (!session) {
-        router.replace("/");
-        return;
-      }
+    if (!mounted) return;
 
-      const currentUser = session.user;
+    if (!session) {
+      setAuthChecked(true); 
+      router.replace("/");
+      return;
+    }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("nom, avatar_url")
-        .eq("id", currentUser.id)
-        .maybeSingle();
+    const currentUser = session.user;
 
-      if (!mounted) return;
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("nom, avatar_url")
+      .eq("id", currentUser.id)
+      .maybeSingle();
 
-      setSession(session);
+    const { data: jobsData } = await supabase
+      .from("jobs")
+      .select("*")
+      .order("date", { ascending: false });
 
-      setUser({
-        name: profile?.nom || currentUser.email?.split("@")[0],
-        email: currentUser.email,
-        avatar_url: profile?.avatar_url || null,
-      });
+    if (!mounted) return;
 
-      const { data: jobsData } = await supabase
-        .from("jobs")
-        .select("*")
-        .order("date", { ascending: false });
+    setSession(session);
 
-      setJobs(jobsData || []);
-      setFilteredJobs(jobsData || []);
-      setAuthChecked(true);
-    };
+    setUser({
+      name: profile?.nom || currentUser.email?.split("@")[0],
+      email: currentUser.email,
+      avatar_url: profile?.avatar_url || null,
+    });
 
-    init();
-  }, []);
+    setJobs(jobsData || []);
+    setFilteredJobs(jobsData || []);
+    setAuthChecked(true);
+  };
 
+  init();
+
+  return () => {
+    mounted = false;
+  };
+}, []);
+
+const [poste, setPoste] = useState("");
+const [lieu, setLieu] = useState("");
+  const normalize = (text) =>
+    (text || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+
+  const jobsWithKeywords = useMemo(() => {
+    return jobs.map((job) => ({
+      ...job,
+      searchStrings: job.titre,
+    }));
+  }, [jobs]);
+
+  const fuse = useMemo(() => {
+    return new Fuse(jobsWithKeywords, {
+      keys: ["searchStrings", "lieu"],
+      threshold: 0.4,
+      includeScore: true,
+      ignoreLocation: true,
+    });
+  }, [jobsWithKeywords]);
+
+  const handleSearch = () => {
+  let results = [...jobs];
+
+  // 🔍 POSTE
+  if (filters.poste.trim()) {
+    const q = normalize(filters.poste);
+
+    results = results.filter(job =>
+      normalize(job.titre).includes(q)
+    );
+  }
+
+  // 📍 LIEU
+  if (filters.lieu.trim()) {
+    const q = normalize(filters.lieu);
+
+    results = results.filter(job =>
+      normalize(job.lieu).includes(q)
+    );
+  }
+
+  setFilteredJobs(results);
+};
+  const handleReset = () => {
+  setFilters({ poste: "", lieu: "" });
+  setFilteredJobs(jobs);
+};
+
+  const [notificationsCount, setNotificationsCount] = useState(0);
+
+useEffect(() => {
+  if (!session?.user?.id) return;
+
+  const fetchNotifications = async () => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("id")
+      .eq("user_id", session.user.id)
+      .eq("is_read", false);
+
+    setNotificationsCount(data?.length || 0);
+  };
+
+  fetchNotifications();
+}, [session?.user?.id]);
+
+console.log("jobs:", jobs);
+console.log("handleSearch exists:", typeof handleSearch);
+  // 🔐 LOADING STATE
   if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -73,7 +154,7 @@ export default function DashboardPage() {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 pb-20">
 
@@ -86,8 +167,17 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
 
             <Link href="/favoris">❤️</Link>
-            <Link href="/notifications">🔔</Link>
+            <div className="relative">
+              <Link href="/notifications" className="text-xl">
+                🔔
+              </Link>
 
+              {notificationsCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-1.5 rounded-full animate-pulse">
+                  {notificationsCount}
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white">
                 {user.avatar_url ? (
