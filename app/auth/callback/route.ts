@@ -12,6 +12,7 @@ export async function GET(request) {
     return NextResponse.redirect(new URL("/auth/error", url));
   }
 
+  // 1. On crée une réponse temporaire (on changera l'URL après)
   const response = NextResponse.redirect(new URL("/dashboard", url));
 
   const supabase = createServerClient(
@@ -19,25 +20,25 @@ export async function GET(request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get: (name) => request.cookies.get(name)?.value,
-        set: (name, value, options) => {
-          response.cookies.set(name, value, options);
-        },
-        remove: (name, options) => {
-          response.cookies.set(name, "", { ...options, maxAge: 0 });
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
         },
       },
     }
   );
 
+  // 2. L'échange du code remplit les cookies de session dans 'response'
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-  if (error || !data?.user) {
+  if (error || !data?.session) {
     return NextResponse.redirect(new URL("/auth/error", url));
   }
 
+  // 3. Logique de profil...
   const user = data.user;
-
   let { data: profile } = await supabase
     .from("profiles")
     .select("role")
@@ -47,27 +48,17 @@ export async function GET(request) {
   if (!profile) {
     const { data: newProfile } = await supabase
       .from("profiles")
-      .insert({
-        id: user.id,
-        email: user.email,
-        role: "user",
-        nom: user.email?.split("@")[0],
-      })
-      .select()
-      .single();
-
+      .insert({ id: user.id, email: user.email, role: "user" })
+      .select().single();
     profile = newProfile;
   }
 
-  // 🔥 redirect final AVEC cookies
-  const redirectPath =
-    profile?.role === "admin" ? "/dashboard/admin" : "/dashboard";
+  // 4. 🔥 LA CLÉ : On change l'en-tête "Location" de la réponse existante
+  const redirectPath = profile?.role === "admin" ? "/dashboard/admin" : "/dashboard";
+  
+  // On clone l'URL pour la nouvelle destination
+  const finalUrl = new URL(redirectPath, url.origin);
+  response.headers.set("Location", finalUrl.toString());
 
-  const finalResponse = NextResponse.redirect(new URL(redirectPath, url));
-
-  response.cookies.getAll().forEach((cookie) => {
-    finalResponse.cookies.set(cookie.name, cookie.value);
-  });
-
-  return finalResponse;
+  return response;
 }
