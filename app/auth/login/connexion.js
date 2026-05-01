@@ -35,7 +35,7 @@ const handleLoginPassword = async (e) => {
       error.message.includes("Email not confirmed") ||
       error.message.includes("Invalid")
     ) {
-      setError("Compte introuvable. Redirection vers inscription...");
+      setError("Compte introuvable. Veuillez vous inscrire d'abord.");
 
       setTimeout(() => {
         router.push("/auth/login");

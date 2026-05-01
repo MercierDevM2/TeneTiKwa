@@ -6,8 +6,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white pb-20">
 
       {/* HEADER (inchangé sauf micro amélioration) */}
-      <header className="w-full border-b bg-white/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <header className="w-full border-b bg-gray-150/80 backdrop-blur">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8 ">
 
           <Image
             src="/icones.png"
@@ -23,7 +23,7 @@ export default function Home() {
 
           <Link
             href="/auth/login"
-            className="bg-black text-orange-500 px-4 py-2 rounded-md w-full sm:w-auto hover:bg-gray-900 transition"
+            className="bg-black text-orange-500 px-4 py-2 rounded-md w-full sm:w-auto hover:bg-gray-900 transition text-center"
           >
             Connexion
           </Link>
@@ -85,8 +85,8 @@ export default function Home() {
             </div>
 
             {/* BENEFICES */}
-            <p className="text-gray-500 text-sm mb-6">
-              ✔ Rapide & simple &nbsp; ✔ Offres vérifiées &nbsp; ✔ Accessible partout
+            <p className="text-gray-500 text-sm mb-6 sm:mb-8" >
+              Rapide & simple ✔ &nbsp;  Offres vérifiées ✔ &nbsp;  Accessible partout ✔
             </p>
 
             {/* CTA */}

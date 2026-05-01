@@ -99,28 +99,30 @@ const [lieu, setLieu] = useState("");
   }, [jobsWithKeywords]);
 
   const handleSearch = () => {
-  let results = [...jobs];
+  // Si les deux champs sont vides, on affiche tout
+  if (!filters.poste.trim() && !filters.lieu.trim()) {
+    setFilteredJobs(jobs);
+    return;
+  }
 
-  // 🔍 POSTE
+  // On prépare la requête de recherche pour Fuse
+  const searchQueries = [];
   if (filters.poste.trim()) {
-    const q = normalize(filters.poste);
-
-    results = results.filter(job =>
-      normalize(job.titre).includes(q)
-    );
+    searchQueries.push({ searchStrings: filters.poste });
   }
-
-  // 📍 LIEU
   if (filters.lieu.trim()) {
-    const q = normalize(filters.lieu);
-
-    results = results.filter(job =>
-      normalize(job.lieu).includes(q)
-    );
+    searchQueries.push({ lieu: filters.lieu });
   }
 
-  setFilteredJobs(results);
+  // On utilise Fuse au lieu du .filter() classique
+  const results = fuse.search({
+    $and: searchQueries
+  });
+
+  // Fuse retourne un objet avec l'item original dans 'item'
+  setFilteredJobs(results.map(r => r.item));
 };
+
   const handleReset = () => {
   setFilters({ poste: "", lieu: "" });
   setFilteredJobs(jobs);
@@ -250,9 +252,9 @@ console.log("handleSearch exists:", typeof handleSearch);
                 className="bg-white p-5 rounded-xl shadow border-l-4 border-green-500"
               >
 
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-4 items-start">
 
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
 
                     <div className="flex items-center gap-3 mb-2">
 
@@ -264,9 +266,10 @@ console.log("handleSearch exists:", typeof handleSearch);
                         unoptimized
                       />
 
-                      <div>
-                        <h3 className="font-bold text-lg">{job.titre}</h3>
-                        <p className="text-sm text-gray-500">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-lg break-words leading-tight">
+                          {job.titre}</h3>
+                        <p className="text-sm text-gray-500 truncate">
                           {job.entreprise}
                         </p>
                       </div>
@@ -289,8 +292,8 @@ console.log("handleSearch exists:", typeof handleSearch);
 
                   </div>
 
-                  <Link href={job.lien || "#"} target="_blank">
-                    <button className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700">
+                  <Link href={job.lien || "#"} target="_blank" className="shrink-0">
+                    <button className="bg-green-600 text-white px-5 py-2 rounded-lg whitespace-nowrap">
                       Postuler →
                     </button>
                   </Link>
