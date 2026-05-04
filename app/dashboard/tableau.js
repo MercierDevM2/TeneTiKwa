@@ -7,15 +7,21 @@ import Link from "next/link";
 import Image from "next/image";
 import Fuse from 'fuse.js';
 import { useMemo, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [message, setMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+
 
   const [filters, setFilters] = useState({ poste: "", lieu: "" });
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [authChecked, setAuthChecked] = useState(false);
   const [session, setSession] = useState(null);
+  const [showContactId, setShowContactId] = useState(null);
 
   const [user, setUser] = useState({
     name: "",
@@ -148,6 +154,14 @@ useEffect(() => {
 
 console.log("jobs:", jobs);
 console.log("handleSearch exists:", typeof handleSearch);
+
+useEffect(() => {
+  if (localStorage.getItem("just_signed_up") === "true") {
+    setShowAlert(true);
+    localStorage.removeItem("just_signed_up");
+  }
+}, []);
+
   // 🔐 LOADING STATE
   if (!authChecked) {
     return (
@@ -194,6 +208,32 @@ console.log("handleSearch exists:", typeof handleSearch);
         </div>
       </header>
 
+      {showAlert && (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+      <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-sm text-center animate-fadeIn">
+
+        <h2 className="text-lg font-bold text-green-600 mb-2">
+          Compte activé
+        </h2>
+
+        <p className="text-gray-600 mb-4">
+          Votre compte a été activé avec succès.
+        </p>
+
+        <button
+          onClick={() => {
+            setShowAlert(false);
+            router.replace("/dashboard");
+          }}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg w-full"
+        >
+          OK
+        </button>
+
+      </div>
+    </div>
+  )}
       {/* MAIN */}
       <main className="container mx-auto px-4 py-6">
 
@@ -292,13 +332,42 @@ console.log("handleSearch exists:", typeof handleSearch);
 
                   </div>
 
-                  <Link href={job.lien || "#"} target="_blank" className="shrink-0">
-                    <button className="bg-green-600 text-white px-5 py-2 rounded-lg whitespace-nowrap">
-                      Postuler →
-                    </button>
-                  </Link>
+                  <div className="flex flex-col gap-2">
 
-                </div>
+                    {/* 🔗 Postuler = lien externe */}
+                   {job.lien ? (
+                    <Link href={job.lien} target="_blank">
+                      <button className="bg-green-600 text-white px-5 py-2 rounded-lg w-full">
+                        Postuler →
+                      </button>
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className="bg-gray-300 text-gray-600 px-5 py-2 rounded-lg w-full cursor-not-allowed"
+                    >
+                      Pas de lien disponible
+                    </button>
+                  )}
+
+                    {/* 📞 Contact = action */}
+                    <button
+                      onClick={() =>
+                        setShowContactId(showContactId === job.id ? null : job.id)
+                      }
+                      className="border border-green-600 text-green-600 px-5 py-2 rounded-lg w-full"
+                    >
+                      Voir Contact
+                    </button>
+
+                    {/* 📍 Affichage de l’adresse */}
+                    {showContactId === job.id && (
+                      <div className="text-sm text-gray-600 bg-gray-100 p-3 rounded-lg">
+                        {job.adresse || "Aucune information disponible"}
+                      </div>
+                    )}
+                  </div>
+                  </div>
 
               </div>
             ))

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const supabase = createClient();
 
@@ -15,6 +15,7 @@ export default function Connexion() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  
 
 
   // 🔐 EMAIL / PASSWORD

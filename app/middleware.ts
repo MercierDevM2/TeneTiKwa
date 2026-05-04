@@ -32,8 +32,8 @@ export async function middleware(request) {
 
   // 🔐 Protection dashboard
   if (!user && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  return NextResponse.redirect(new URL("/auth/login", request.url));
+}
 
   // 🔐 Protection admin
   if (user && pathname.startsWith("/dashboard/admin")) {

@@ -53,11 +53,15 @@ export async function GET(request) {
     profile = newProfile;
   }
 
-  // 4. 🔥 LA CLÉ : On change l'en-tête "Location" de la réponse existante
-  const redirectPath = profile?.role === "admin" ? "/dashboard/admin" : "/dashboard";
+    // 4. 🔥 LA MODIFICATION : Ajouter un paramètre de succès
+  const isTargetAdmin = profile?.role === "admin";
+  const redirectPath = isTargetAdmin ? "/dashboard/admin" : "/dashboard";
   
-  // On clone l'URL pour la nouvelle destination
+  // On crée l'URL finale et on ajoute "?verified=true"
   const finalUrl = new URL(redirectPath, url.origin);
+  finalUrl.searchParams.set("verified", "true"); 
+
+  // On met à jour l'en-tête de redirection
   response.headers.set("Location", finalUrl.toString());
 
   return response;

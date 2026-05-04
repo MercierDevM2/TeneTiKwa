@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [jobs, setJobs] = useState([]);
   const [authChecked, setAuthChecked] = useState(false); // true uniquement si admin confirmé
   const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const [form, setForm] = useState({
     titre: "",
@@ -22,6 +23,8 @@ export default function AdminPage() {
     logo: "",
     lien: "",
     source: "",
+    date: "",
+    adresse: "",
   });
 
   useEffect(() => {
@@ -92,7 +95,7 @@ export default function AdminPage() {
   // ➕ Ajouter une offre
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.titre || !form.entreprise || !form.lieu || !form.type || !form.description || !form.logo || !form.lien || !form.source || !form.date) {
+    if (!form.titre || !form.entreprise || !form.lieu ) {
       alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
@@ -110,6 +113,7 @@ export default function AdminPage() {
           lien: form.lien,
           source: form.source,
           date: form.date,
+          adresse: form.adresse
         },
       ])
       .select();
@@ -140,7 +144,8 @@ export default function AdminPage() {
     logo: "",
     lien: "",
     source: "",
-    date: ""
+    date: "",
+    adresse: "",
   });
 
   alert("Offre publiée !");
@@ -149,16 +154,24 @@ export default function AdminPage() {
 
   // ❌ Supprimer une offre
   const handleDelete = async (id) => {
-    if (!confirm("Supprimer cette offre ?")) return;
+  if (!confirm("Supprimer cette offre ?")) return;
 
-    const { error } = await supabase.from("jobs").delete().eq("id", id);
-    if (error) {
-      console.error("Erreur de suppression :", error.message);
-      alert("Erreur lors de la suppression.");
-    } else {
-      setJobs((prev) => prev.filter((job) => job.id !== id));
-    }
-  };
+  setDeletingId(id);
+
+  const { error } = await supabase
+    .from("jobs")
+    .delete()
+    .eq("id", id);
+
+  setDeletingId(null);
+
+  if (error) {
+    alert("Erreur lors de la suppression");
+    return;
+  }
+
+  setJobs((prev) => prev.filter((job) => job.id !== id));
+};
 
   //  Pendant la vérification, on n’affiche qu’un indicateur de chargement
   if (!authChecked) {
@@ -205,12 +218,13 @@ export default function AdminPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
 
               {[
-                { key: "titre", placeholder: "Titre *" },
-                { key: "entreprise", placeholder: "Entreprise *" },
-                { key: "lieu", placeholder: "Lieu *" },
-                { key: "type", placeholder: "Type (CDI, CDD...)" },
+                { key: "titre", placeholder: "Titre *", required: true },
+                { key: "entreprise", placeholder: "Entreprise *", required: true },
+                { key: "lieu", placeholder: "Lieu *", required: true },
+                { key: "type", placeholder: "Type" },
                 { key: "logo", placeholder: "Logo (URL)" },
                 { key: "lien", placeholder: "Lien (URL)" },
+                { key: "adresse", placeholder: "Adresse" },
                 { key: "source", placeholder: "Source" },
                 { key: "date", placeholder: "Date", type: "date" },
               ].map((field) => (
@@ -221,14 +235,14 @@ export default function AdminPage() {
                   onChange={(e) =>
                     setForm({ ...form, [field.key]: e.target.value })
                   }
-                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition"
                   type={field.type || "text"}
-                  required
+                  required={field.required || false}
+                  className="w-full border p-3 rounded-lg"
                 />
               ))}
 
               <textarea
-                placeholder="Description *"
+                placeholder="Description"
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
@@ -270,11 +284,12 @@ export default function AdminPage() {
                     </div>
 
                     <button
-                      onClick={() => handleDelete(job.id)}
-                      className="text-red-500 hover:text-red-700 text-sm font-medium"
-                    >
-                      Supprimer
-                    </button>
+                    onClick={() => handleDelete(job.id)}
+                    disabled={deletingId === job.id}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
+                  >
+                    {deletingId === job.id ? "Suppression..." : "Supprimer"}
+                  </button>
                   </div>
                 ))}
               </div>
