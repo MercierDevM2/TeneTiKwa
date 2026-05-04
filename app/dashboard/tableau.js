@@ -348,7 +348,7 @@ useEffect(() => {
                       disabled
                       className="bg-gray-300 text-gray-600 px-5 py-2 rounded-lg w-full cursor-not-allowed"
                     >
-                      Pas de lien disponible
+                      Auncun lien
                     </button>
                   )}
 
