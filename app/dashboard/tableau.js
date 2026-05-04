@@ -156,6 +156,8 @@ console.log("jobs:", jobs);
 console.log("handleSearch exists:", typeof handleSearch);
 
 useEffect(() => {
+  if (typeof window === "undefined") return;
+
   if (localStorage.getItem("just_signed_up") === "true") {
     setShowAlert(true);
     localStorage.removeItem("just_signed_up");
