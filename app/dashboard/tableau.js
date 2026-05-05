@@ -352,7 +352,7 @@ useEffect(() => {
                     </button>
                   )}
 
-                    {/* 📞 Contact = action */}
+                    {/* 📞 Contact */}
                     <button
                       onClick={() =>
                         setShowContactId(showContactId === job.id ? null : job.id)
@@ -362,10 +362,31 @@ useEffect(() => {
                       Voir Contact
                     </button>
 
-                    {/* 📍 Affichage de l’adresse */}
+                    {/* 🟢 MODAL CONTACT */}
                     {showContactId === job.id && (
-                      <div className="text-sm text-gray-600 bg-gray-100 p-3 rounded-lg">
-                        {job.adresse || "Aucune information disponible"}
+                      <div
+                        className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+                        onClick={() => setShowContactId(null)} // clic extérieur
+                      >
+                        <div
+                          className="bg-white p-5 rounded-xl shadow-xl w-[90%] max-w-sm"
+                          onClick={(e) => e.stopPropagation()} // empêche fermeture si clic dedans
+                        >
+                          <h3 className="font-semibold text-lg mb-2 text-green-600">
+                            Contact
+                          </h3>
+
+                          <p className="text-gray-600 text-sm">
+                            {job.adresse || "Aucune information disponible"}
+                          </p>
+
+                          <button
+                            onClick={() => setShowContactId(null)}
+                            className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg"
+                          >
+                            Fermer
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
