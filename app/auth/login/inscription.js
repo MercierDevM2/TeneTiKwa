@@ -22,16 +22,16 @@ const handleLoginPassword = async (e) => {
   setError("");
 
   const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        nom: email.split("@")[0],
-        avatar_url: null,
-      },
-      redirectTo: `${window.location.origin}/auth/callback`,
+  email,
+  password,
+  options: {
+    data: {
+      nom: email.split("@")[0],
+      avatar_url: null,
     },
-  });
+    emailRedirectTo: `${window.location.origin}/auth/callback`,
+  },
+});
 
   if (error) {
     setError(error.message);
