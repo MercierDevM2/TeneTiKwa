@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleTagManager } from '@next/third-parties/google';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,6 +21,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${geistSans.variable} ${geistMono.variable}`}>
+
+      <GoogleTagManager gtmId="GTM-KTL899HC" /> 
+      
       <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );

@@ -267,6 +267,7 @@ useEffect(() => {
               <button
                 onClick={handleSearch}
                 className="bg-green-600 text-white px-4 py-2 rounded"
+                id="btn-research"
               >
                 🔍 Rechercher
               </button>
@@ -274,6 +275,7 @@ useEffect(() => {
               <button
                 onClick={handleReset}
                 className="border px-4 py-2 rounded"
+                id="btn-reset"
               >
                 ↺
               </button>
@@ -339,7 +341,7 @@ useEffect(() => {
                     {/* 🔗 Postuler = lien externe */}
                    {job.lien ? (
                     <Link href={job.lien} target="_blank">
-                      <button className="bg-green-600 text-white px-5 py-2 rounded-lg w-full">
+                      <button className="bg-green-600 text-white px-5 py-2 rounded-lg w-full" id="btn-postuler">
                         Postuler →
                       </button>
                     </Link>
@@ -347,6 +349,7 @@ useEffect(() => {
                     <button
                       disabled
                       className="bg-gray-300 text-gray-600 px-5 py-2 rounded-lg w-full cursor-not-allowed"
+                      id="btn-postuler-disabled"
                     >
                       Auncun lien
                     </button>
@@ -358,6 +361,7 @@ useEffect(() => {
                         setShowContactId(showContactId === job.id ? null : job.id)
                       }
                       className="border border-green-600 text-green-600 px-5 py-2 rounded-lg w-full"
+                      id="btn-voir-contact"
                     >
                       Voir Contact
                     </button>
@@ -383,6 +387,7 @@ useEffect(() => {
                           <button
                             onClick={() => setShowContactId(null)}
                             className="mt-4 w-full bg-green-600 text-white py-2 rounded-lg"
+                            id="btn-fermer-contact"
                           >
                             Fermer
                           </button>

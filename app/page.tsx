@@ -92,6 +92,7 @@ export default function Home() {
             {/* CTA */}
             <Link
               href="/auth"
+              id="btn-voir-offres"
               className="inline-block bg-green-600 text-white px-8 py-3 rounded-full text-lg hover:bg-green-700 transition shadow-md hover:shadow-xl transform hover:scale-105"
             >
               Voir les offres

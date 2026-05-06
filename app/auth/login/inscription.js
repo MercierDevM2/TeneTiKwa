@@ -127,6 +127,7 @@ const handleLoginPassword = async (e) => {
 
           <button
             disabled={loading}
+            id="S'inscrire-btn"
             className="w-full bg-blue-600 text-white py-3 sm:py-3.5 rounded-full hover:bg-blue-700 transition text-sm sm:text-base font-medium"
           >
             {loading ? "Chargement..." : "S'inscrire"}
@@ -146,6 +147,7 @@ const handleLoginPassword = async (e) => {
         <button
           onClick={loginWithGoogle}
           disabled={loading}
+          id="btn-google"
           className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 transition text-sm sm:text-base"
         >
           <img
@@ -161,6 +163,7 @@ const handleLoginPassword = async (e) => {
           onClick={loginWithApple}
           disabled={loading}
           className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 mt-3 transition text-sm sm:text-base"
+          id="btn-apple"
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"

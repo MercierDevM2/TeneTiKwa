@@ -142,6 +142,7 @@ const handleLoginPassword = async (e) => {
 
           <button
             disabled={loading}
+            id="btn-se-connecter"
             className="w-full bg-blue-600 text-white py-3 sm:py-3.5 rounded-full hover:bg-blue-700 transition text-sm sm:text-base font-medium"
           >
             {loading ? "Connexion..." : "Se connecter"}
@@ -160,6 +161,7 @@ const handleLoginPassword = async (e) => {
         <button
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 transition text-sm sm:text-base"
+          id="btn-google"
         >
           <img
             src="https://www.svgrepo.com/show/355037/google.svg"
