@@ -7,28 +7,35 @@ export async function middleware(request) {
   let response = NextResponse.next();
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name, value, options) {
-          response.cookies.set(name, value, options);
-        },
-        remove(name, options) {
-          response.cookies.set(name, "", { ...options, maxAge: 0 });
-        },
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: (cookies) => {
+        cookies.forEach(({ name, value, options }) => {
+          // force SameSite=Lax et Secure si HTTPS en production
+          response.cookies.set(name, value, {
+            ...options,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+          });
+        });
       },
-    }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    },
+  }
+);
 
   const pathname = request.nextUrl.pathname;
+
+if (pathname.startsWith("/auth/callback")) {
+  return response;
+}
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 
   // 🔐 Protection dashboard
   if (!user && pathname.startsWith("/dashboard")) {

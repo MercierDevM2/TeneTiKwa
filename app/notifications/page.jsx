@@ -10,33 +10,36 @@ export default function NotificationsPage() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    const init = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  const init = async () => {
 
-      if (!session) return;
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-      setSession(session);
+    if (!session) return;
 
-      // 1️⃣ Récupérer les notifications
-      const { data } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
+    setSession(session);
 
-      setNotifications(data || []);
+    // 1️⃣ Récupérer notifications
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: false });
 
-      // 2️⃣ Marquer comme lu (ICI 🔥)
-      await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("user_id", session.user.id);
-    };
+    setNotifications(data || []);
 
-    init();
-  }, []);
+    // 2️⃣ Marquer toutes comme lues
+  const markAsRead = async () => {
+    await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("user_id", session.user.id);
+};
+  };
+
+  init();
+}, []);
 
   return (
     <div>

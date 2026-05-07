@@ -1,4 +1,3 @@
-// app/auth/callback/route.ts
 // @ts-nocheck
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
@@ -11,14 +10,17 @@ export async function GET(request) {
     return NextResponse.redirect(new URL("/auth/error", url));
   }
 
+  // Accumule les cookies temporairement
+  let cookiesToSet = [];
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (cookies) => {
-          // on injecte plus tard dans response finale
+          cookiesToSet = cookies; // on garde la référence
         },
       },
     }
@@ -30,29 +32,30 @@ export async function GET(request) {
     return NextResponse.redirect(new URL("/auth/error", url));
   }
 
-  const user = data.user;
+  const user = data.session.user;
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
-    .maybeSingle();
+    .single();
 
-  const isAdmin = profile?.role === "admin";
+  const redirectTo =
+    profile?.role === "admin"
+      ? "/dashboard/admin"
+      : "/dashboard";
 
-  const finalUrl = new URL(
-    isAdmin ? "/dashboard/admin" : "/dashboard",
-    url.origin
-  );
+  // Crée la réponse finale
+  const response = NextResponse.redirect(new URL(redirectTo, url.origin));
 
-  finalUrl.searchParams.set("verified", "true");
-
-  const response = NextResponse.redirect(finalUrl);
-
-  // 🔥 IMPORTANT : réinjecter cookies ici
-  const cookies = request.cookies.getAll();
-  cookies.forEach((cookie) => {
-    response.cookies.set(cookie.name, cookie.value);
+  // Pose tous les cookies de session AVEC les bonnes options
+  cookiesToSet.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, {
+      ...options,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
   });
 
   return response;

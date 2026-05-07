@@ -40,7 +40,6 @@ export default function DashboardPage() {
 
     if (!session) {
       setAuthChecked(true); 
-      router.replace("/");
       return;
     }
 
@@ -79,8 +78,6 @@ export default function DashboardPage() {
   };
 }, []);
 
-const [poste, setPoste] = useState("");
-const [lieu, setLieu] = useState("");
   const normalize = (text) =>
     (text || "")
       .toLowerCase()
@@ -140,16 +137,28 @@ useEffect(() => {
   if (!session?.user?.id) return;
 
   const fetchNotifications = async () => {
-    const { data } = await supabase
+    const { count } = await supabase
       .from("notifications")
-      .select("id")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
       .eq("user_id", session.user.id)
       .eq("is_read", false);
 
-    setNotificationsCount(data?.length || 0);
+    setNotificationsCount(count || 0);
   };
 
+  // premier chargement
   fetchNotifications();
+
+  // 🔥 actualisation toutes les 10 secondes
+  const interval = setInterval(() => {
+    fetchNotifications();
+  },10000);
+
+  return () => clearInterval(interval);
+
 }, [session?.user?.id]);
 
 console.log("jobs:", jobs);
@@ -165,7 +174,8 @@ useEffect(() => {
 }, []);
 
   // 🔐 LOADING STATE
-  if (!authChecked) {
+  if (!authChecked || !session) 
+{
     return (
       <div className="min-h-screen flex items-center justify-center">
         Chargement...
@@ -351,7 +361,7 @@ useEffect(() => {
                       className="bg-gray-300 text-gray-600 px-5 py-2 rounded-lg w-full cursor-not-allowed"
                       id="btn-postuler-disabled"
                     >
-                      Auncun lien
+                      Aucun lien
                     </button>
                   )}
 

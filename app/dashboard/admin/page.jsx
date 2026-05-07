@@ -124,16 +124,37 @@ export default function AdminPage() {
   // 🔔 NOTIFICATIONS
   const { data: users } = await supabase
     .from("profiles")
-    .select("id");
+    .select("id, email");
 
-  if (users && users.length > 0) {
-    const notifications = users.map((user) => ({
+  for (const user of users) {
+
+  await supabase
+    .from("notifications")
+    .insert({
       user_id: user.id,
-      message: `Nouveau job: ${form.titre}`,
-    }));
+      message: `Nouvelle offre : ${form.titre}`,
+    });
+}
 
-    await supabase.from("notifications").insert(notifications);
-  }
+// 🔥 UNE SEULE FOIS
+const emails = users.map((u) => ({
+  email: u.email,
+}));
+
+await fetch("/auth/jobsroute/jobapi", {
+  method: "POST",
+
+  headers: {
+    "Content-Type": "application/json",
+  },
+
+  body: JSON.stringify({
+    emails,
+    titre: form.titre,
+    entreprise: form.entreprise,
+    lieu: form.lieu,
+  }),
+});
 
   setForm({
     titre: "",

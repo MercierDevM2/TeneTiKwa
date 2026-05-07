@@ -15,8 +15,6 @@ export default function Connexion() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
-
 
   // 🔐 EMAIL / PASSWORD
 const handleLoginPassword = async (e) => {
@@ -24,49 +22,30 @@ const handleLoginPassword = async (e) => {
   setLoading(true);
   setError("");
 
+  await supabase.auth.signOut();
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.trim(),
-    password,
-  });
+  email: email.trim(),
+  password,
+});
 
-  // ❌ cas 1 : compte inexistant OU mauvais login
-  if (error) {
-    if (
-      error.message.includes("Invalid login credentials") ||
-      error.message.includes("Email not confirmed") ||
-      error.message.includes("Invalid")
-    ) {
-      setError("Compte introuvable. Veuillez vous inscrire d'abord.");
+if (error) {
+  setError("Erreur de connexion");
+  return;
+}
 
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 1500);
+const user = data.user;
 
-      setLoading(false);
-      return;
-    }
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("role")
+  .eq("id", user.id)
+  .single();
 
-    setError("Erreur de connexion");
-    setLoading(false);
-    return;
-  }
-
-  const user = data.user;
-
-  // 🔍 profil
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role === "admin") {
-    router.push("/admin");
-  } else {
-    router.push("/dashboard");
-  }
-
-  setLoading(false);
+router.replace(
+  profile?.role === "admin"
+    ? "/dashboard/admin"
+    : "/dashboard"
+);
 };
 
   // 🔵 GOOGLE LOGIN
@@ -74,6 +53,7 @@ const handleLoginPassword = async (e) => {
     setLoading(true);
     setError("");
 
+    await supabase.auth.signOut();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
