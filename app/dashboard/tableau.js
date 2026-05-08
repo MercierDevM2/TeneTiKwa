@@ -136,7 +136,24 @@ export default function DashboardPage() {
 useEffect(() => {
   if (!session?.user?.id) return;
 
+  const channel = supabase
+    .channel("notifications-count")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${session.user.id}`,
+      },
+      () => {
+        fetchNotifications();
+      }
+    )
+    .subscribe();
+
   const fetchNotifications = async () => {
+
     const { count } = await supabase
       .from("notifications")
       .select("*", {
@@ -149,15 +166,11 @@ useEffect(() => {
     setNotificationsCount(count || 0);
   };
 
-  // premier chargement
   fetchNotifications();
 
-  // 🔥 actualisation toutes les 10 secondes
-  const interval = setInterval(() => {
-    fetchNotifications();
-  },10000);
-
-  return () => clearInterval(interval);
+  return () => {
+    supabase.removeChannel(channel);
+  };
 
 }, [session?.user?.id]);
 
@@ -190,7 +203,7 @@ useEffect(() => {
       <header className="bg-white shadow-sm border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
 
-          <Image src="/icones.png" alt="logo" width={120} height={120} />
+          <Image src="/icones.png" alt="logo" width={120} height={120} style={{ width: "auto", height: "auto" }} />
 
           <div className="flex items-center gap-4">
 

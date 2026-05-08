@@ -99,49 +99,91 @@ export default function AdminPage() {
       alert("Veuillez remplir tous les champs obligatoires.");
       return;
     }
+    const { data: existing } = await supabase
+      .from("jobs")
+      .select("id")
+      .eq("lien", form.lien)
+      .single();
+
+    const safeLien =
+      form.lien && form.lien.trim() !== ""
+        ? form.lien
+        : null;
+
+    if (safeLien) {
+  const { data: existing } = await supabase
+    .from("jobs")
+    .select("id")
+    .eq("lien", safeLien)
+    .maybeSingle();
+
+  if (existing) {
+    alert("Cette offre existe déjà");
+    return;
+  }
+}
 
     const { data, error } = await supabase
-      .from("jobs")
-      .insert([
-        {
-          titre: form.titre,
-          entreprise: form.entreprise,
-          lieu: form.lieu,
-          type: form.type,
-          description: form.description,
-          logo: form.logo,
-          lien: form.lien,
-          source: form.source,
-          date: form.date,
-          adresse: form.adresse
-        },
-      ])
-      .select();
+  .from("jobs")
+  .insert([
+    {
+      titre: form.titre,
+      entreprise: form.entreprise,
+      lieu: form.lieu,
+      type: form.type,
+      description: form.description,
+      logo: form.logo,
+      lien: safeLien,
+      source: form.source,
+      date: form.date,
+      adresse: form.adresse,
+    },
+  ])
+  .select();
+  
+      if (error) {
+  console.log("INSERT JOB ERROR:", error);
+  return;
+}
 
     if (!error) {
   setJobs((prev) => [data[0], ...prev]);
 
-  // 🔔 NOTIFICATIONS
-  const { data: users } = await supabase
-    .from("profiles")
-    .select("id, email");
+  // Récupération utilisateurs
+const { data: users, error: usersError } = await supabase
+  .from("profiles")
+  .select("id, email");
 
-  for (const user of users) {
-
-  await supabase
-    .from("notifications")
-    .insert({
-      user_id: user.id,
-      message: `Nouvelle offre : ${form.titre}`,
-    });
+if (usersError) {
+  console.log(usersError);
+  return;
 }
 
-// 🔥 UNE SEULE FOIS
-const emails = users.map((u) => ({
-  email: u.email,
+// Préparer notifications
+const notifications = users.map((user) => ({
+  user_id: user.id,
+  message: "De nouvelles offres sont disponibles sur TeneTiKwa.",
 }));
 
-await fetch("/auth/jobsroute/jobapi", {
+// Insertion en une seule requête
+const { error: notifError } = await supabase
+  .from("notifications")
+  .insert(notifications);
+
+if (notifError) {
+  console.log(notifError);
+}
+
+// Préparer emails
+const emails = users
+  .filter((u) => u.email)
+  .map((u) => ({
+    email: u.email,
+  }));
+
+// Un seul envoi Brevo
+const response = await fetch("/auth/jobsroute", {
+
   method: "POST",
 
   headers: {
@@ -150,11 +192,19 @@ await fetch("/auth/jobsroute/jobapi", {
 
   body: JSON.stringify({
     emails,
-    titre: form.titre,
-    entreprise: form.entreprise,
-    lieu: form.lieu,
   }),
 });
+
+const text = await response.text();
+
+let result;
+try {
+  result = JSON.parse(text);
+} catch {
+  result = { raw: text };
+}
+
+console.log(result);
 
   setForm({
     titre: "",
@@ -272,7 +322,8 @@ await fetch("/auth/jobsroute/jobapi", {
                 required
               />
 
-              <button className="w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition text-sm sm:text-base font-medium">
+              <button type="submit"
+              className="w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 transition text-sm sm:text-base font-medium">
                 Publier
               </button>
             </form>

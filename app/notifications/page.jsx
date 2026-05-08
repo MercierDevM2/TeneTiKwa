@@ -30,12 +30,10 @@ export default function NotificationsPage() {
     setNotifications(data || []);
 
     // 2️⃣ Marquer toutes comme lues
-  const markAsRead = async () => {
-    await supabase
-    .from("notifications")
-    .update({ is_read: true })
-    .eq("user_id", session.user.id);
-};
+  await supabase
+  .from("notifications")
+  .update({ is_read: true })
+  .eq("user_id", session.user.id);
   };
 
   init();
