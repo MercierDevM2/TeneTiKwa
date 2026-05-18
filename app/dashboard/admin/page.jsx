@@ -162,7 +162,7 @@ if (usersError) {
 // Préparer notifications
 const notifications = users.map((user) => ({
   user_id: user.id,
-  message: "De nouvelles offres sont disponibles sur TeneTiKwa.",
+  message: `De nouvelles offres sont publiées: ${form.titre}.`,
 }));
 
 // Insertion en une seule requête
