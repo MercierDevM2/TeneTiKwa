@@ -200,7 +200,9 @@ useEffect(() => {
     <div className="min-h-screen flex flex-col bg-gray-50 pb-20">
 
       {/* HEADER */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-10
+      placeholder-gray-500 dark:placeholder-gray-400
+     bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
 
           <Image src="/icones.png" alt="logo" width={120} height={120} style={{ width: "auto", height: "auto" }} />
@@ -236,7 +238,9 @@ useEffect(() => {
       {showAlert && (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-      <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-sm text-center animate-fadeIn">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-sm text-center animate-fadeIn
+      placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
 
         <h2 className="text-lg font-bold text-green-600 mb-2">
           Compte activé
@@ -260,10 +264,14 @@ useEffect(() => {
     </div>
   )}
       {/* MAIN */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6
+      placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
 
         {/* FILTRES */}
-        <div className="bg-white p-6 rounded-xl shadow mb-6">
+        <div className="bg-white p-6 rounded-xl shadow mb-6
+        placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
           <h2 className="mb-4 font-semibold">Recherche d'emploi</h2>
 
           <div className="grid md:grid-cols-3 gap-4">
@@ -308,7 +316,8 @@ useEffect(() => {
         </div>
 
         {/* JOBS */}
-        <div className="space-y-4">
+        <div className="space-y-4 placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
 
           {filteredJobs.length === 0 ? (
             <p className="text-gray-500">Aucune offre disponible</p>
@@ -316,10 +325,12 @@ useEffect(() => {
             filteredJobs.map((job) => (
               <div
                 key={job.id}
-                className="bg-white p-5 rounded-xl shadow border-l-4 border-green-500"
+                className="bg-white p-5 rounded-xl shadow border-l-4 border-green-500
+                placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               >
 
-                <div className="flex justify-between gap-4 items-start">
+                <div className="flex justify-between gap-4 items-start ">
 
                   <div className="flex-1 min-w-0">
 
@@ -343,7 +354,7 @@ useEffect(() => {
 
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-3">
+                    <p className="text-sm text-gray-500 mb-3">
                       {job.description}
                     </p>
 
@@ -428,7 +439,9 @@ useEffect(() => {
 
       </main>
 
-      <footer className="fixed bottom-0 left-0 w-full bg-white border-t py-6 z-50">
+      <footer className="fixed bottom-0 left-0 w-full bg-white border-t py-6 z-50
+      gray-500 dark:gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         <div className="text-center text-gray-500 text-sm">
         © 2026 GreenItCar tous droits réservés.
       </div>

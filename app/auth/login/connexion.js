@@ -73,7 +73,9 @@ router.replace(
     {/* Container adaptatif */}
     <div className="w-full max-w-md sm:max-w-lg lg:max-w-xl">
 
-      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10">
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10
+      placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
 
         {/* HEADER */}
         <div className="text-center mb-6 sm:mb-8">

@@ -259,7 +259,10 @@ console.log(result);
 
     {/* HEADER */}
     <header className="bg-white shadow">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between 
+      items-center gap-3 px-4 py-4 sm:px-6 lg:px-8
+      placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         <h1 className="font-bold text-lg sm:text-xl">
           Admin Dashboard
         </h1>
@@ -281,8 +284,10 @@ console.log(result);
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* FORM */}
-          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow">
-            <h2 className="font-semibold text-lg mb-4">
+          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+            <h2 className="font-semibold text-lg mb-4 placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               Ajouter une offre
             </h2>
 
@@ -308,7 +313,9 @@ console.log(result);
                   }
                   type={field.type || "text"}
                   required={field.required || false}
-                  className="w-full border p-3 rounded-lg"
+                 className="w-full border p-3 rounded-lg 
+                placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 />
               ))}
 
@@ -318,7 +325,9 @@ console.log(result);
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition"
+                className="w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none p-3 rounded-lg text-sm sm:text-base transition
+                placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 required
               />
 
@@ -330,8 +339,10 @@ console.log(result);
           </div>
 
           {/* LIST */}
-          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow">
-            <h2 className="font-semibold text-lg mb-4">
+          <div className="bg-white p-5 sm:p-6 lg:p-8 rounded-2xl shadow placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+            <h2 className="font-semibold text-lg mb-4 placeholder-gray-500 dark:placeholder-gray-400
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               Offres publiées
             </h2>
 

@@ -59,26 +59,17 @@ const handleLoginPassword = async (e) => {
     });
   };
 
-  // 🍎 APPLE
-  const loginWithApple = async () => {
-    setLoading(true);
-
-    await supabase.auth.signInWithOAuth({
-      provider: "apple",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-  };
-
   return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 lg:px-8">
+  <div className="min-h-screen flex items-center justify-center 
+  bg-gray-100 px-4 py-6 sm:px-6 lg:px-8">
     
     {/* Container global adaptable */}
     <div className="w-full max-w-md sm:max-w-lg lg:max-w-xl">
       
       {/* Card */}
-      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10">
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10
+      placeholder-gray-500 dark:placeholder-gray-400
+      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         
         {/* HEADER */}
         <div className="text-center mb-6 sm:mb-8">
@@ -156,21 +147,6 @@ const handleLoginPassword = async (e) => {
             alt="Google"
           />
           Continuer avec Google
-        </button>
-
-        {/* APPLE */}
-        <button
-          onClick={loginWithApple}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 border py-3 sm:py-3.5 rounded-full hover:bg-gray-50 mt-3 transition text-sm sm:text-base"
-          id="btn-apple"
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-            alt="Apple"
-            className="w-5 h-5"
-          />
-          Continuer avec Apple
         </button>
 
         {/* FOOTER */}

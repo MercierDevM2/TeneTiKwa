@@ -1,6 +1,48 @@
+// @ts-nocheck
+"use client";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const CountUp = ({ end, suffix = "", duration = 2000 }) => {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current || hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasAnimated(true);
+          observer.disconnect();
+
+          let start = 0;
+          const increment = end / (duration / 16);
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= end) {
+              setCount(end);
+              clearInterval(timer);
+            } else {
+              setCount(Math.ceil(start));
+            }
+          }, 16);
+
+          // ✅ Nettoyer l’intervalle si le composant est démonté
+          return () => clearInterval(timer);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [end, duration, hasAnimated]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -68,17 +110,23 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row justify-center gap-6 mb-6">
 
               <div className="text-center">
-                <p className="text-sky-600 text-4xl font-bold">+150</p>
+                <p className="text-sky-600 text-4xl font-bold">
+                  +<CountUp end={150} />
+                </p>
                 <p className="text-gray-500 text-sm">offres/mois</p>
               </div>
 
               <div className="text-center">
-                <p className="text-green-600 text-4xl font-bold">+30</p>
+                <p className="text-green-600 text-4xl font-bold">
+                  +<CountUp end={30} />
+                </p>
                 <p className="text-gray-500 text-sm">entreprises</p>
               </div>
 
               <div className="text-center">
-                <p className="text-black text-4xl font-bold">100%</p>
+                <p className="text-black text-4xl font-bold">
+                  +<CountUp end={100} />
+                </p>
                 <p className="text-gray-500 text-sm">gratuit</p>
               </div>
 
