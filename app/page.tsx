@@ -1,48 +1,51 @@
 // @ts-nocheck
-"use client";
-import { useState, useEffect, useRef } from "react";
+import CountUp from "./components/countUp";
 import Image from "next/image";
 import Link from "next/link";
 
-const CountUp = ({ end, suffix = "", duration = 2000 }) => {
-  const [count, setCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const ref = useRef(null);
+export const metadata = {
+  title: "Offres d'emploi ONG et entreprises en Centrafrique | TeneTiKwa",
+  description:
+    "Trouvez rapidement les meilleures offres d'emploi des ONG et entreprises en Centrafrique.",
+  keywords: [
+    "emploi ONG Bangui",
+    "travail Centrafrique",
+    "offres d'emploi RCA",
+    "emploi Afrique centrale",
+    "emploi en Centrafrique",
+  ],
 
-  useEffect(() => {
-    if (!ref.current || hasAnimated) return;
+  alternates: {
+    canonical: "https://tenetikwa.vercel.app",
+  },
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setHasAnimated(true);
-          observer.disconnect();
-
-          let start = 0;
-          const increment = end / (duration / 16);
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else {
-              setCount(Math.ceil(start));
-            }
-          }, 16);
-
-          // ✅ Nettoyer l’intervalle si le composant est démonté
-          return () => clearInterval(timer);
-        }
+  openGraph: {
+    title: "TeneTiKwa",
+    description:
+      "Plateforme d'emploi et de recrutement en Centrafrique.",
+    url: "https://tenetikwa.vercel.app",
+    siteName: "TeneTiKwa",
+    images: [
+      {
+        url: "/icones.png",
+        width: 1200,
+        height: 630,
       },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [end, duration, hasAnimated]);
-
-  return <span ref={ref}>{count}{suffix}</span>;
+    ],
+    locale: "fr_FR",
+    type: "website",
+  },
 };
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "JobBoard",
+  name: "TeneTiKwa",
+  description:
+    "Plateforme d'emploi en Centrafrique",
+  url: "https://tenetikwa.vercel.app",
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -53,10 +56,11 @@ export default function Home() {
 
           <Image
             src="/icones.png"
-            alt="logo"
+            alt="Logo TeneTiKwa plateforme d'emploi en Centrafrique"
             width={120}
             height={120}
             className="w-24 sm:w-28 md:w-32"
+            priority
           />
 
           <p className="text-gray-600 text-sm sm:text-base text-center sm:text-left max-w-md">
@@ -72,6 +76,13 @@ export default function Home() {
 
         </div>
       </header>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema),
+        }}
+      />
 
       {/* MAIN */}
       <main className="flex-1 flex items-center justify-center relative">
@@ -90,10 +101,11 @@ export default function Home() {
             {/* LOGO */}
             <Image
               src="/icones.png"
-              alt="logo"
+              alt="TeneTiKwa recrutement ONG et entreprises en Centrafrique"
               width={200}
               height={200}
               className="w-32 sm:w-44 md:w-56 mx-auto mb-6"
+              priority
             />
 
             {/* TITRE */}
@@ -101,6 +113,9 @@ export default function Home() {
               Votre prochain emploi commence ici
             </h1>
 
+            <h2 className="sr-only">
+              Plateforme d'emploi et recrutement en Centrafrique
+            </h2>
             {/* DESCRIPTION */}
             <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8">
               Accédez aux meilleures offres d'emploi des ONG et entreprises en un seul endroit.
@@ -131,6 +146,24 @@ export default function Home() {
               </div>
 
             </div>
+
+            <section className="max-w-5xl mx-auto py-12 px-4">
+              <h2 className="text-3xl font-bold mb-6">
+                Trouvez un emploi en Centrafrique facilement
+              </h2>
+
+              <p className="text-gray-600 leading-8 mb-4">
+                TeneTiKwa centralise les offres d'emploi des ONG,
+                entreprises privées et institutions présentes en
+                République Centrafricaine.
+              </p>
+
+              <p className="text-gray-600 leading-8">
+                Que vous soyez développeur, comptable, logisticien,
+                assistant administratif ou étudiant, accédez rapidement
+                aux opportunités disponibles à Bangui et dans les autres régions.
+              </p>
+            </section>
 
             {/* BENEFICES */}
             <p className="text-gray-500 text-sm mb-6 sm:mb-8" >
