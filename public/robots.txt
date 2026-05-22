@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://tenetikwa.vercel.app
+
+# Sitemaps
+Sitemap: https://tenetikwa.vercel.app/sitemap.xml
