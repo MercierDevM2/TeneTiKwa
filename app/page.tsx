@@ -146,7 +146,8 @@ export default function Home() {
               </div>
 
             </div>
-
+            
+            {/* partie SEO */}
             <section className="max-w-5xl mx-auto py-12 px-4">
               <h2 className="text-3xl font-bold mb-6">
                 Trouvez un emploi en Centrafrique facilement
