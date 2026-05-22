@@ -4,15 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Offres d'emploi ONG et entreprises en Centrafrique | TeneTiKwa",
+  title: "Emploi Centrafrique : Offres ONG et entreprises | TeneTiKwa",
   description:
-    "Trouvez rapidement les meilleures offres d'emploi des ONG et entreprises en Centrafrique.",
+    "Plateforme d'emploi en Centrafrique. Trouvez des offres d'ONG, entreprises et organisations internationales à Bangui et partout dans le pays.",
   keywords: [
-    "emploi ONG Bangui",
-    "travail Centrafrique",
-    "offres d'emploi RCA",
-    "emploi Afrique centrale",
-    "emploi en Centrafrique",
+    "emploi Centrafrique",
+    "offres ONG Bangui",
+    "travail RCA",
+    "recrutement Centrafrique",
+    "emploi Bangui",
   ],
 
   alternates: {
@@ -20,20 +20,26 @@ export const metadata = {
   },
 
   openGraph: {
-    title: "TeneTiKwa",
+    title: "TeneTiKwa - Emploi en Centrafrique",
     description:
-      "Plateforme d'emploi et de recrutement en Centrafrique.",
+      "Offres d'emploi ONG et entreprises en Centrafrique",
     url: "https://tenetikwa.vercel.app",
     siteName: "TeneTiKwa",
-    images: [
-      {
-        url: "/icones.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
+    images: [{ url: "/icones.png", width: 1200, height: 630 }],
     locale: "fr_FR",
     type: "website",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "TeneTiKwa",
+    description: "Emploi en Centrafrique",
+    images: ["/icones.png"],
   },
 };
 
@@ -41,153 +47,150 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "JobBoard",
   name: "TeneTiKwa",
-  description:
-    "Plateforme d'emploi en Centrafrique",
   url: "https://tenetikwa.vercel.app",
+  description: "Plateforme d'emploi en Centrafrique",
 };
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white pb-20">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 via-white to-slate-100 pb-20">
 
-      {/* HEADER (inchangé sauf micro amélioration) */}
-      <header className="w-full border-b bg-gray-150/80 backdrop-blur">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8 ">
+      {/* HEADER */}
+      <header className="w-full border-b bg-white/70 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between px-4 py-4 gap-4">
 
           <Image
             src="/icones.png"
-            alt="Logo TeneTiKwa plateforme d'emploi en Centrafrique"
-            width={120}
-            height={120}
-            className="w-24 sm:w-28 md:w-32"
+            alt="TeneTiKwa logo emploi Centrafrique"
+            width={110}
+            height={110}
             priority
           />
 
-          <p className="text-gray-600 text-sm sm:text-base text-center sm:text-left max-w-md">
-            Décrochez l'emploi qui vous correspond, où que vous soyez en Centrafrique
+          <p className="text-gray-600 text-sm sm:text-base text-center max-w-md">
+            Plateforme d'emploi en Centrafrique : ONG, entreprises et organisations internationales
           </p>
 
           <Link
             href="/auth/login"
-            className="bg-black text-orange-500 px-4 py-2 rounded-md w-full sm:w-auto hover:bg-gray-900 transition text-center"
+            className="bg-black text-white px-5 py-2 rounded-xl hover:bg-gray-800 transition"
           >
             Connexion
           </Link>
-
         </div>
       </header>
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(schema),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* MAIN */}
+      {/* HERO */}
       <main className="flex-1 flex items-center justify-center relative">
 
-        {/* fond décoratif léger (IMPORTANT pour le design) */}
+        {/* background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[400px] h-[400px] bg-green-200/30 blur-3xl rounded-full top-10 left-10"></div>
-          <div className="absolute w-[300px] h-[300px] bg-sky-200/30 blur-3xl rounded-full bottom-10 right-10"></div>
+          <div className="absolute w-[500px] h-[500px] bg-emerald-200/30 blur-3xl rounded-full top-10 left-10"></div>
+          <div className="absolute w-[400px] h-[400px] bg-sky-200/30 blur-3xl rounded-full bottom-10 right-10"></div>
         </div>
 
-        <div className="max-w-6xl w-full flex flex-col items-center text-center px-4 py-10 sm:py-16 lg:py-20 relative z-10">
+        <div className="max-w-6xl w-full px-4 py-12 relative z-10">
 
-          {/* HERO CARD */}
-          <div className="bg-white/70 backdrop-blur-md shadow-xl rounded-2xl p-8 sm:p-12 border border-gray-100">
+          <div className="bg-white/80 backdrop-blur-md border shadow-xl rounded-3xl p-8 sm:p-12 text-center">
 
-            {/* LOGO */}
             <Image
               src="/icones.png"
-              alt="TeneTiKwa recrutement ONG et entreprises en Centrafrique"
-              width={200}
-              height={200}
-              className="w-32 sm:w-44 md:w-56 mx-auto mb-6"
+              alt="emploi Centrafrique TeneTiKwa"
+              width={180}
+              height={180}
+              className="mx-auto mb-6"
               priority
             />
 
-            {/* TITRE */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-4 bg-gradient-to-r from-black via-gray-700 to-black bg-clip-text text-transparent">
-              Votre prochain emploi commence ici
+            {/* H1 SEO */}
+            <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight bg-gradient-to-r from-black via-gray-700 to-black bg-clip-text text-transparent">
+              Trouvez un emploi en Centrafrique rapidement
             </h1>
 
-            <h2 className="sr-only">
-              Plateforme d'emploi et recrutement en Centrafrique
-            </h2>
-            {/* DESCRIPTION */}
-            <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8">
-              Accédez aux meilleures offres d'emploi des ONG et entreprises en un seul endroit.
+            <p className="mt-6 text-gray-600 text-lg max-w-2xl mx-auto">
+              Accédez aux offres d'emploi des ONG, entreprises et institutions à Bangui et dans toute la Centrafrique.
             </p>
 
-            {/* STATS MULTIPLES */}
-            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-6">
+            {/* STATS */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
 
-              <div className="text-center">
-                <p className="text-sky-600 text-4xl font-bold">
+              <div>
+                <p className="text-4xl font-bold text-emerald-600">
                   +<CountUp end={150} />
                 </p>
-                <p className="text-gray-500 text-sm">offres/mois</p>
+                <p className="text-gray-500">Offres mensuelles</p>
               </div>
 
-              <div className="text-center">
-                <p className="text-green-600 text-4xl font-bold">
+              <div>
+                <p className="text-4xl font-bold text-sky-600">
                   +<CountUp end={30} />
                 </p>
-                <p className="text-gray-500 text-sm">entreprises</p>
+                <p className="text-gray-500">Entreprises actives</p>
               </div>
 
-              <div className="text-center">
-                <p className="text-black text-4xl font-bold">
+              <div>
+                <p className="text-4xl font-bold text-black">
                   +<CountUp end={100} />
                 </p>
-                <p className="text-gray-500 text-sm">gratuit</p>
+                <p className="text-gray-500">100% gratuit</p>
               </div>
 
             </div>
-            
-            {/* partie SEO */}
-            <section className="max-w-5xl mx-auto py-12 px-4">
-              <h2 className="text-3xl font-bold mb-6">
-                Trouvez un emploi en Centrafrique facilement
+
+            {/* SEO SECTION */}
+            <section className="mt-14 text-left max-w-4xl mx-auto">
+
+              <h2 className="text-2xl font-bold mb-4">
+                Plateforme d'emploi en Centrafrique
               </h2>
 
               <p className="text-gray-600 leading-8 mb-4">
-                TeneTiKwa centralise les offres d'emploi des ONG,
-                entreprises privées et institutions présentes en
-                République Centrafricaine.
+                TeneTiKwa centralise les offres d'emploi disponibles en Centrafrique pour les ONG, entreprises privées et organisations internationales.
               </p>
 
               <p className="text-gray-600 leading-8">
-                Que vous soyez développeur, comptable, logisticien,
-                assistant administratif ou étudiant, accédez rapidement
-                aux opportunités disponibles à Bangui et dans les autres régions.
+                Que vous soyez développeur, comptable, logisticien ou étudiant, trouvez rapidement des opportunités professionnelles adaptées à votre profil.
               </p>
             </section>
 
-            {/* BENEFICES */}
-            <p className="text-gray-500 text-sm mb-6 sm:mb-8" >
-              Rapide & simple ✔ &nbsp;  Offres vérifiées ✔ &nbsp;  Accessible partout ✔
-            </p>
+            {/* WHY */}
+            <section className="mt-10 text-left max-w-4xl mx-auto">
+
+              <h2 className="text-2xl font-bold mb-4">
+                Pourquoi utiliser TeneTiKwa ?
+              </h2>
+
+              <ul className="list-disc pl-5 text-gray-600 space-y-2">
+                <li>Offres vérifiées et mises à jour</li>
+                <li>Accès rapide aux emplois ONG et entreprises</li>
+                <li>Disponible partout en Centrafrique</li>
+                <li>Interface simple et rapide</li>
+              </ul>
+            </section>
 
             {/* CTA */}
-            <Link
-              href="/auth"
-              id="btn-voir-offres"
-              className="inline-block bg-green-600 text-white px-8 py-3 rounded-full text-lg hover:bg-green-700 transition shadow-md hover:shadow-xl transform hover:scale-105"
-            >
-              Voir les offres
-            </Link>
+            <div className="mt-12">
+              <Link
+                href="/auth"
+                className="inline-block bg-emerald-600 text-white px-10 py-3 rounded-full text-lg hover:bg-emerald-700 transition shadow-lg hover:scale-105"
+              >
+                Voir les offres d'emploi
+              </Link>
+            </div>
 
           </div>
         </div>
       </main>
 
-      {/* FOOTER (inchangé) */}
-      <footer className="fixed bottom-0 left-0 w-full bg-white border-t py-6 z-50">
+      {/* FOOTER */}
+      <footer className="w-full border-t bg-white py-6 mt-10">
         <div className="text-center text-gray-500 text-sm">
-          © 2026 GreenItCar tous droits réservés.
+          © 2026 TeneTiKwa - Tous droits réservés
         </div>
       </footer>
 
