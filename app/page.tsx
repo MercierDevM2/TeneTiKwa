@@ -190,7 +190,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="w-full border-t bg-white py-6 mt-10">
         <div className="text-center text-gray-500 text-sm">
-          © 2026 TeneTiKwa - Tous droits réservés
+           © 2026 TenetiKwa - développée par GreenItCar
         </div>
       </footer>
 

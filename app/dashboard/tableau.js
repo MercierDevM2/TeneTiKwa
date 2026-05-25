@@ -439,13 +439,11 @@ useEffect(() => {
 
       </main>
 
-      <footer className="fixed bottom-0 left-0 w-full bg-white border-t py-6 z-50
-      gray-500 dark:gray-400
-      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+      <footer className="w-full border-t bg-white py-6 mt-10">
         <div className="text-center text-gray-500 text-sm">
-        © 2026 GreenItCar tous droits réservés.
-      </div>
-    </footer>
+           © 2026 TenetiKwa - développée par GreenItCar
+        </div>
+      </footer>
 
     </div>
   );
