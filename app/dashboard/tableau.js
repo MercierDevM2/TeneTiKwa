@@ -316,89 +316,54 @@ useEffect(() => {
         </div>
 
         {/* JOBS */}
-        <div className="space-y-4 placeholder-gray-500 dark:placeholder-gray-400
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 dark:placeholder-gray-400
       bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
 
           {filteredJobs.length === 0 ? (
             <p className="text-gray-500">Aucune offre disponible</p>
           ) : (
             filteredJobs.map((job) => (
-              <div
-                key={job.id}
-                className="bg-white p-5 rounded-xl shadow border-l-4 border-green-500
-                placeholder-gray-500 dark:placeholder-gray-400
-      bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-              >
+             <div key={job.id} className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow border-l-4 border-green-500 dark:border-green-400">
 
-                <div className="flex justify-between gap-4 items-start ">
+              {/* En-tête avec logo + titre + entreprise */}
+              <div className="flex items-start gap-3 mb-3">
+                <Image src={job.logo || "/placeholder.png"} alt="logo" width={40} height={40} unoptimized className="flex-shrink-0" />
+                <div>
+                  <h3 className="font-bold text-lg leading-tight line-clamp-2 text-gray-900 dark:text-gray-100">{job.titre}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{job.entreprise}</p>
+                </div>
+              </div>
 
-                  <div className="flex-1 min-w-0">
+              {/* Description */}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">{job.description}</p>
 
-                    <div className="flex items-center gap-3 mb-2">
+              {/* Métadonnées (lieu, type, date) */}
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400 mb-4">
+                <span>📍 {job.lieu}</span>
+                <span>💼 {job.type}</span>
+                <span>📅 {job.date ? new Date(job.date).toLocaleDateString("fr-FR") : ""}</span>
+              </div>
 
-                      <Image
-                        src={job.logo || "/placeholder.png"}
-                        alt="logo"
-                        width={40}
-                        height={40}
-                        unoptimized
-                      />
+              {/* Boutons d'action : empilés, pleine largeur */}
+              <div className="flex flex-col gap-2">
+                {job.lien ? (
+                  <Link href={job.lien} target="_blank">
+                    <button className="bg-green-600 text-white px-5 py-2 rounded-lg w-fullbg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-600 text-white px-5 py-2 rounded-lg w-full transition">
+                      Postuler →</button>
+                  </Link>
+                ) : (
+                  <span className="block text-center bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-sm px-3 py-2 rounded-lg w-full">
+                    ⚠️ Aucun lien
+                  </span>
+                )}
 
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-lg break-words leading-tight">
-                          {job.titre}</h3>
-                        <p className="text-sm text-gray-500 truncate">
-                          {job.entreprise}
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <p className="text-sm text-gray-500 mb-3">
-                      {job.description}
-                    </p>
-
-                    <div className="flex gap-3 text-xs">
-                      <span>📍 {job.lieu}</span>
-                      <span>💼 {job.type}</span>
-                      <span>
-                        📅 {job.date
-                          ? new Date(job.date).toLocaleDateString("fr-FR")
-                          : ""}
-                      </span>
-                    </div>
-
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-
-                    {/* 🔗 Postuler = lien externe */}
-                   {job.lien ? (
-                    <Link href={job.lien} target="_blank">
-                      <button className="bg-green-600 text-white px-5 py-2 rounded-lg w-full" id="btn-postuler">
-                        Postuler →
-                      </button>
-                    </Link>
-                  ) : (
-                    <button
-                      disabled
-                      className="bg-gray-300 text-gray-600 px-5 py-2 rounded-lg w-full cursor-not-allowed"
-                      id="btn-postuler-disabled"
-                    >
-                      Aucun lien
-                    </button>
-                  )}
-
-                    {/* 📞 Contact */}
-                    <button
-                      onClick={() =>
-                        setShowContactId(showContactId === job.id ? null : job.id)
-                      }
-                      className="border border-green-600 text-green-600 px-5 py-2 rounded-lg w-full"
-                      id="btn-voir-contact"
-                    >
-                      Voir Contact
-                    </button>
+                <button
+                  onClick={() => setShowContactId(showContactId === job.id ? null : job.id)}
+                  className="border border-green-600 text-green-600 px-5 py-2 rounded-lg w-full"
+                >
+                  Voir Contact
+                </button>
+              </div>
 
                     {/* 🟢 MODAL CONTACT */}
                     {showContactId === job.id && (
@@ -429,19 +394,14 @@ useEffect(() => {
                       </div>
                     )}
                   </div>
-                  </div>
-
-              </div>
-            ))
-          )}
-
+                ))
+              )}
         </div>
 
       </main>
-
-      <footer className="w-full border-t bg-white py-6 mt-10">
-        <div className="text-center text-gray-500 text-sm">
-           © 2026 TenetiKwa - développée par GreenItCar
+      <footer className="w-full border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-6 mt-10">
+        <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
+          © 2026 TenetiKwa - développée par GreenItCar
         </div>
       </footer>
 
