@@ -15,6 +15,20 @@ export default function Connexion() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
+
+  // 🔍 DÉTECTION DE NAVIGATEUR IN-APP
+  useEffect(() => {
+  const ua = navigator.userAgent;
+
+  const inApp =
+    ua.includes("WhatsApp") ||
+    ua.includes("FBAN") ||
+    ua.includes("FBAV") ||
+    ua.includes("Instagram");
+
+  setIsInAppBrowser(inApp);
+}, []);
 
   // 🔐 EMAIL / PASSWORD
 const handleLoginPassword = async (e) => {
@@ -49,23 +63,32 @@ router.replace(
 };
 
   // 🔵 GOOGLE LOGIN
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError("");
+const handleGoogleLogin = async () => {
+  setLoading(true);
+  setError("");
 
+  try {
     await supabase.auth.signOut();
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        skipBrowserRedirect: false,
       },
     });
 
     if (error) {
-      setError("Erreur connexion Google");
+      setError("Une erreur est survenue lors de la connexion Google.");
       setLoading(false);
     }
-  };
+  } catch (err) {
+    setError(
+      "Connexion Google impossible. Ouvrez TenetiKwa dans Chrome ou Firefox puis réessayez."
+    );
+    setLoading(false);
+  }
+};
 
   return (
   <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-6 sm:px-6 lg:px-8">
@@ -85,6 +108,13 @@ router.replace(
           <p className="text-gray-500 mt-2 text-xs sm:text-sm lg:text-base">
             Votre marché d'emploi près de vous
           </p>
+
+          {isInAppBrowser && (
+          <div className="mt-4 p-3 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm">
+            Vous utilisez le navigateur intégré de WhatsApp, Facebook ou Instagram.
+            Si la connexion Google échoue, ouvrez TenetiKwa dans Chrome, Firefox ou Safari.
+          </div>
+        )}
         </div>
 
         {/* FORM */}
