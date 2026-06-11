@@ -9,18 +9,7 @@ import Fuse from 'fuse.js';
 import { useMemo, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
-export const metadata = {
-  title: "Tableau de bord | TeneTiKwa",
-  description:
-    "Gérez votre profil, vos candidatures et vos alertes emploi depuis votre espace personnel TeneTiKwa.",
-  alternates: {
-    canonical: "https://tenetikwa.vercel.app/dashboard",
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+
 export default function DashboardPage() {
   const supabase = createClient();
   const router = useRouter();

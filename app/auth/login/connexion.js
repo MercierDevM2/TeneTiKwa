@@ -5,19 +5,6 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export const metadata = {
-  title: "Connexion | TeneTiKwa",
-  description:
-    "Connectez-vous à votre espace TeneTiKwa pour consulter vos candidatures et découvrir de nouvelles offres d'emploi.",
-  alternates: {
-    canonical: "https://tenetikwa.vercel.app/connexion",
-  },
-  robots: {
-    index: false,
-    follow: true,
-  },
-};
-
 const supabase = createClient();
 
 export default function Connexion() {
