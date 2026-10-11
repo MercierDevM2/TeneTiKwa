@@ -43,9 +43,23 @@ export async function POST() {
           ],
           subject: "Nouvelles offres disponibles",
           htmlContent: `
-            <h2>Bonjour ${user.nom || "Utilisateur"} </h2>
-            <p>De nouvelles offres viennent d’être publiées.</p>
-            <a href="https://tenetikwa.vercel.app/">Ouvrir l'app</a>
+            <h2>Bonjour ${user.nom || "Utilisateur"},</h2>
+
+<p>Bonne nouvelle ! De nouvelles offres d'emploi sont disponibles sur TeneTiKwa.</p>
+
+<p>Consultez les dernières opportunités et trouvez celle qui correspond à votre profil.</p>
+
+<p>
+  <a href="https://tenetikwa.vercel.app/"
+     style="background-color:#16a34a;color:#ffffff;padding:12px 20px;
+     text-decoration:none;border-radius:6px;display:inline-block;">
+    Consulter les offres
+  </a>
+</p>
+
+<p>Nous vous souhaitons beaucoup de succès dans vos recherches d'emploi !</p>
+
+<p>L'équipe TeneTiKwa</p>
           `,
         }),
       });
