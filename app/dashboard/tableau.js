@@ -381,9 +381,11 @@ useEffect(() => {
                             Contact
                           </h3>
 
-                          <p className="text-gray-600 text-sm">
+                          
+                          <p className="text-gray-600 text-sm max-h-32 overflow-y-auto overscroll-contain break-words whitespace-pre-wrap text-justify">
                             {job.adresse || "Aucune information disponible"}
                           </p>
+
 
                           <button
                             onClick={() => setShowContactId(null)}
